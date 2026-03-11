@@ -5,38 +5,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ex Tibiano - Stamina Calculator</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     :root {
       --bg: #121212;
+      --bg-soft: #0f0f0f;
       --panel: #1a1a1a;
-      --panel-2: #101010;
+      --panel-2: #151515;
       --border: #2f2f2f;
       --border-soft: #252525;
       --text: #f1f1f1;
       --muted: #bdbdbd;
       --gold: #d7a84d;
-      --gold-soft: #8f6a20;
+      --gold-glow: rgba(215, 168, 77, 0.12);
       --green: #57d37c;
       --yellow: #ffd24f;
       --red: #ff6b6b;
       --blue: #7eb6ff;
-      --shadow: 0 10px 30px rgba(0,0,0,0.28);
-      --radius: 18px;
+      --shadow: 0 14px 38px rgba(0, 0, 0, 0.28);
+      --radius-xl: 22px;
+      --radius-lg: 18px;
+      --radius-md: 14px;
     }
 
     body {
       background:
-        radial-gradient(circle at top, rgba(215,168,77,0.06), transparent 30%),
-        linear-gradient(180deg, #0f0f0f, #121212 30%, #0f0f0f);
+        radial-gradient(circle at top, rgba(215, 168, 77, 0.07), transparent 30%),
+        linear-gradient(180deg, #0d0d0d, #121212 28%, #101010);
       color: var(--text);
       font-family: Arial, Helvetica, sans-serif;
       min-height: 100vh;
-      padding: 18px;
+      padding: 16px;
     }
 
     .app {
-      max-width: 1120px;
+      max-width: 1080px;
       margin: 0 auto;
     }
 
@@ -45,11 +52,11 @@
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      margin-bottom: 18px;
       padding: 18px 20px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      margin-bottom: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
       border: 1px solid var(--border);
-      border-radius: 20px;
+      border-radius: var(--radius-xl);
       box-shadow: var(--shadow);
     }
 
@@ -57,128 +64,83 @@
       display: flex;
       align-items: center;
       gap: 12px;
+      min-width: 0;
     }
 
     .brand-mark {
-      width: 46px;
-      height: 46px;
+      width: 48px;
+      height: 48px;
       border-radius: 14px;
       display: grid;
       place-items: center;
       font-size: 22px;
-      background: linear-gradient(135deg, rgba(215,168,77,0.18), rgba(215,168,77,0.06));
-      border: 1px solid rgba(215,168,77,0.25);
       color: var(--gold);
+      background: linear-gradient(135deg, rgba(215,168,77,0.18), rgba(215,168,77,0.06));
+      border: 1px solid rgba(215,168,77,0.24);
       flex: 0 0 auto;
     }
 
     .brand h1 {
-      font-size: clamp(24px, 4vw, 34px);
+      font-size: clamp(24px, 3.5vw, 34px);
       line-height: 1.05;
       margin-bottom: 4px;
       color: #fff;
     }
 
     .brand p {
-      color: var(--muted);
       font-size: 14px;
+      color: var(--muted);
     }
 
-    .page-badge {
+    .page-chip {
+      min-height: 42px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-height: 42px;
       padding: 0 14px;
       border-radius: 12px;
-      background: rgba(215,168,77,0.10);
-      border: 1px solid rgba(215,168,77,0.26);
+      background: rgba(215, 168, 77, 0.10);
+      border: 1px solid rgba(215, 168, 77, 0.24);
       color: #ffe7b8;
       font-size: 13px;
       font-weight: 700;
       white-space: nowrap;
+      flex: 0 0 auto;
     }
 
     .hero {
-      display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 18px;
       margin-bottom: 18px;
     }
 
-    .hero-card,
+    .hero-main,
     .card {
       background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
       border: 1px solid var(--border);
-      border-radius: var(--radius);
+      border-radius: var(--radius-xl);
       box-shadow: var(--shadow);
     }
 
-    .hero-card {
-      padding: 22px;
+    .hero-main {
+      padding: 24px;
     }
 
-    .hero-card h2 {
-      font-size: clamp(26px, 4vw, 38px);
-      line-height: 1.05;
+    .hero-main h2 {
+      font-size: clamp(28px, 4vw, 40px);
+      line-height: 1.02;
       margin-bottom: 10px;
       color: #fff;
     }
 
-    .hero-card p {
+    .hero-main p {
       color: var(--muted);
       font-size: 15px;
-      line-height: 1.5;
-      max-width: 720px;
-    }
-
-    .hero-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 16px;
-    }
-
-    .pill {
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: #151515;
-      border: 1px solid var(--border-soft);
-      color: #ddd;
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .hero-side {
-      padding: 18px;
-      display: grid;
-      gap: 12px;
-    }
-
-    .mini-stat {
-      background: #141414;
-      border: 1px solid var(--border-soft);
-      border-radius: 16px;
-      padding: 14px;
-    }
-
-    .mini-stat .k {
-      color: var(--muted);
-      font-size: 12px;
-      margin-bottom: 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
-    }
-
-    .mini-stat .v {
-      color: #fff;
-      font-weight: 800;
-      font-size: 20px;
+      line-height: 1.55;
+      max-width: 760px;
     }
 
     .main-grid {
       display: grid;
-      grid-template-columns: 1.08fr 0.92fr;
+      grid-template-columns: 1fr 1fr;
       gap: 18px;
       align-items: start;
     }
@@ -194,7 +156,7 @@
       font-size: 12px;
       font-weight: 700;
       color: #bed9ff;
-      background: rgba(126,182,255,0.09);
+      background: rgba(126,182,255,0.08);
       border: 1px solid rgba(126,182,255,0.18);
       padding: 8px 12px;
       border-radius: 999px;
@@ -202,15 +164,15 @@
     }
 
     .card h3 {
-      font-size: 28px;
+      font-size: clamp(24px, 3.5vw, 30px);
       margin-bottom: 8px;
       color: #fff;
     }
 
-    .card .desc {
+    .desc {
       color: var(--muted);
       font-size: 14px;
-      line-height: 1.45;
+      line-height: 1.5;
       margin-bottom: 18px;
     }
 
@@ -228,7 +190,7 @@
     }
 
     .field label {
-      color: #f0f0f0;
+      color: #f2f2f2;
       font-size: 13px;
       font-weight: 700;
     }
@@ -239,7 +201,9 @@
       line-height: 1.35;
     }
 
-    input, select, button {
+    input,
+    select,
+    button {
       font: inherit;
     }
 
@@ -250,7 +214,7 @@
       min-height: 50px;
       background: #111111;
       color: var(--text);
-      border: 1px solid #333;
+      border: 1px solid #333333;
       border-radius: 14px;
       padding: 12px 14px;
       outline: none;
@@ -261,7 +225,7 @@
     input[type="datetime-local"]:focus,
     select:focus {
       border-color: var(--gold);
-      box-shadow: 0 0 0 3px rgba(215,168,77,0.10);
+      box-shadow: 0 0 0 3px var(--gold-glow);
     }
 
     .input-green {
@@ -282,27 +246,29 @@
       font-weight: 800;
     }
 
-    .quick-box,
+    .target-box,
     .info-box,
-    .explain-box {
+    .legend-box,
+    .rule-box {
       background: #141414;
       border: 1px solid var(--border-soft);
-      border-radius: 16px;
+      border-radius: var(--radius-lg);
       padding: 14px;
     }
 
-    .quick-box {
+    .target-box {
       margin-bottom: 14px;
     }
 
-    .quick-title {
-      font-size: 13px;
-      font-weight: 700;
-      margin-bottom: 10px;
-      color: #e5e5e5;
+    .target-box-top {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: end;
+      margin-bottom: 12px;
     }
 
-    .quick-buttons {
+    .target-quick-buttons {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
@@ -324,7 +290,26 @@
     .quick-btn:hover,
     .now-btn:hover {
       background: #232323;
-      border-color: #444;
+      border-color: #474747;
+    }
+
+    .quick-btn.active-quick {
+      border-color: rgba(215,168,77,0.45);
+      background: rgba(215,168,77,0.12);
+      color: #ffe6b3;
+    }
+
+    .info-box {
+      margin-bottom: 14px;
+      color: #dddddd;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .info-box strong,
+    .rule-box strong,
+    .legend-box strong {
+      color: #fff;
     }
 
     .now-btn {
@@ -334,15 +319,12 @@
       color: #ffe7b8;
     }
 
-    .info-box {
-      margin-bottom: 14px;
-      color: #ddd;
-      font-size: 14px;
-      line-height: 1.45;
-    }
-
-    .info-box strong {
-      color: #fff;
+    .or-divider {
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+      margin: 10px 0;
     }
 
     .error {
@@ -360,8 +342,8 @@
     .result-main {
       background: linear-gradient(180deg, rgba(215,168,77,0.14), rgba(215,168,77,0.04));
       border: 1px solid rgba(215,168,77,0.22);
-      border-radius: 18px;
-      padding: 18px;
+      border-radius: var(--radius-lg);
+      padding: 22px 18px;
       margin-bottom: 14px;
     }
 
@@ -373,17 +355,26 @@
     }
 
     .result-main .big {
-      font-size: clamp(34px, 6vw, 52px);
+      font-size: clamp(38px, 6vw, 56px);
       line-height: 1;
       font-weight: 900;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       color: #fff;
+      letter-spacing: -0.02em;
     }
 
     .result-main .sub {
-      color: #e2e2e2;
+      color: #f0e2c0;
+      font-size: 20px;
+      font-weight: 800;
+      line-height: 1.3;
+    }
+
+    .result-main .sub-secondary {
+      color: #e3e3e3;
       font-size: 14px;
       line-height: 1.45;
+      margin-top: 8px;
     }
 
     .meter {
@@ -403,21 +394,23 @@
       transition: width 0.25s ease;
     }
 
-    .stats {
+    .recovery-breakdown {
       display: grid;
-      grid-template-columns: 1fr 1fr;
       gap: 12px;
       margin-bottom: 14px;
     }
 
-    .stat {
+    .recovery-item {
       background: #141414;
       border: 1px solid var(--border-soft);
-      border-radius: 16px;
+      border-radius: var(--radius-lg);
       padding: 15px;
     }
 
-    .stat .k {
+    .recovery-item .k {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       color: var(--muted);
       font-size: 12px;
       margin-bottom: 6px;
@@ -425,14 +418,33 @@
       letter-spacing: 0.4px;
     }
 
-    .stat .v {
+    .recovery-item .v {
       color: #fff;
-      font-size: 18px;
+      font-size: 20px;
       font-weight: 800;
       line-height: 1.25;
     }
 
-    .explain-box h4 {
+    .recovery-item .s {
+      color: #bcbcbc;
+      font-size: 13px;
+      line-height: 1.35;
+      margin-top: 6px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      flex: 0 0 auto;
+    }
+
+    .dot.green { background: var(--green); }
+    .dot.yellow { background: var(--yellow); }
+    .dot.red { background: var(--red); }
+
+    .legend-box h4,
+    .rule-box h4 {
       font-size: 16px;
       margin-bottom: 10px;
       color: #fff;
@@ -440,29 +452,21 @@
 
     .legend {
       display: grid;
-      gap: 10px;
+      gap: 8px;
     }
 
     .legend-item {
-      display: flex;
-      gap: 10px;
-      align-items: flex-start;
-      color: #ddd;
+      color: #dddddd;
       font-size: 14px;
-      line-height: 1.4;
+      line-height: 1.45;
     }
 
-    .dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 999px;
-      margin-top: 4px;
-      flex: 0 0 auto;
+    .rule-box {
+      margin-top: 14px;
+      color: #dddddd;
+      font-size: 14px;
+      line-height: 1.5;
     }
-
-    .dot.green { background: var(--green); }
-    .dot.yellow { background: var(--yellow); }
-    .dot.red { background: var(--red); }
 
     .footer-note {
       margin-top: 14px;
@@ -472,31 +476,37 @@
     }
 
     @media (max-width: 980px) {
-      .hero,
       .main-grid {
         grid-template-columns: 1fr;
       }
     }
 
-    @media (max-width: 700px) {
+    @media (max-width: 760px) {
       .topbar {
         flex-direction: column;
         align-items: stretch;
       }
 
+      .page-chip {
+        width: 100%;
+      }
+
       .row,
-      .stats {
+      .target-box-top {
         grid-template-columns: 1fr;
       }
 
-      .card-body,
-      .hero-card,
-      .hero-side {
+      .hero-main,
+      .card-body {
         padding: 16px;
       }
 
       body {
         padding: 12px;
+      }
+
+      .result-main .sub {
+        font-size: 17px;
       }
     }
   </style>
@@ -511,38 +521,16 @@
           <p>Somos todos Ex Ex tibianos.</p>
         </div>
       </div>
-      <div class="page-badge">Stamina Calculator</div>
+      <div class="page-chip">Stamina Calculator</div>
     </header>
 
     <section class="hero">
-      <div class="hero-card">
+      <div class="hero-main">
         <h2>Calculadora de Stamina</h2>
         <p>
-          Veja automaticamente quanto tempo falta para sua stamina chegar na meta desejada
-          e, se quiser, descubra também a data e hora exata em que ela ficará pronta.
+          Veja o tempo para a sua stamina chegar na meta desejada.
+          Ou descubra a data e hora exata em que ela ficará pronta.
         </p>
-
-        <div class="hero-pills">
-          <div class="pill">Atualização automática</div>
-          <div class="pill">Offline +10 min</div>
-          <div class="pill">Fuso horário</div>
-          <div class="pill">Cores da stamina</div>
-        </div>
-      </div>
-
-      <div class="hero-side">
-        <div class="mini-stat">
-          <div class="k">Modo</div>
-          <div class="v">Offline</div>
-        </div>
-        <div class="mini-stat">
-          <div class="k">Stamina máxima</div>
-          <div class="v">42:00</div>
-        </div>
-        <div class="mini-stat">
-          <div class="k">Cálculo</div>
-          <div class="v">Automático</div>
-        </div>
       </div>
     </section>
 
@@ -551,27 +539,23 @@
         <div class="card-body">
           <div class="section-tag">⏳ Dados da stamina</div>
           <h3>Preencha os dados</h3>
-          <p class="desc">
-            Digite sua stamina atual e a meta desejada. O resultado muda sozinho, sem botão de calcular.
-          </p>
 
           <div class="row">
             <div class="field">
               <label for="currentStamina">Stamina atual</label>
-              <input id="currentStamina" type="text" value="34:30" placeholder="Ex.: 34:30" maxlength="5" />
-              <small>O valor muda de cor conforme a faixa da stamina.</small>
-            </div>
-
-            <div class="field">
-              <label for="targetStamina">Stamina alvo</label>
-              <input id="targetStamina" type="text" value="42:00" placeholder="Ex.: 42:00" maxlength="5" />
-              <small>Você pode digitar ou usar as opções rápidas.</small>
+              <input id="currentStamina" type="text" value="34:30" placeholder="Ex.: 34:30" maxlength="5" inputmode="numeric" />
             </div>
           </div>
 
-          <div class="quick-box">
-            <div class="quick-title">Stamina pronta rápida</div>
-            <div class="quick-buttons">
+          <div class="target-box">
+            <div class="target-box-top">
+              <div class="field" style="margin: 0;">
+                <label for="targetStamina">Stamina alvo</label>
+                <input id="targetStamina" type="text" value="42:00" placeholder="Ex.: 42:00" maxlength="5" inputmode="numeric" />
+              </div>
+            </div>
+
+            <div class="target-quick-buttons">
               <button class="quick-btn" type="button" data-target="37:00">37:00</button>
               <button class="quick-btn" type="button" data-target="38:00">38:00</button>
               <button class="quick-btn" type="button" data-target="39:00">39:00</button>
@@ -581,34 +565,26 @@
           </div>
 
           <div class="info-box">
-            <strong>Recuperação offline:</strong> esta calculadora já considera os
-            <strong>10 minutos iniciais</strong> antes da stamina começar a recuperar.
+            <strong>Recuperação offline:</strong> os <strong>10 minutos iniciais</strong> já estão imbutidos no cálculo.
           </div>
 
-          <div class="row">
-            <div class="field">
-              <label for="timezoneSelect">Fuso horário</label>
-              <select id="timezoneSelect"></select>
-              <small>Use seu fuso para a data final ficar correta.</small>
-            </div>
+          <div class="field" style="margin-bottom: 0;">
+            <button class="now-btn" id="useNowBtn" type="button">Usar data e hora atual</button>
+          </div>
 
-            <div class="field">
-              <label for="startTime">Data e hora inicial (opcional)</label>
-              <input id="startTime" type="datetime-local" />
-              <small>Preencha só se quiser ver quando a stamina ficará pronta.</small>
-            </div>
+          <div class="or-divider">Ou</div>
+
+          <div class="field" style="margin-bottom: 14px;">
+            <label for="startTime">Data e hora inicial (opcional)</label>
+            <input id="startTime" type="datetime-local" />
           </div>
 
           <div class="field">
-            <button class="now-btn" id="useNowBtn" type="button">Usar data e hora atual</button>
-            <small>Preenche automaticamente com o horário atual.</small>
+            <label for="timezoneSelect">Fuso horário (opcional)</label>
+            <select id="timezoneSelect"></select>
           </div>
 
           <div class="error" id="errorBox"></div>
-
-          <div class="footer-note">
-            O resultado é atualizado automaticamente conforme você altera os campos.
-          </div>
         </div>
       </section>
 
@@ -619,66 +595,54 @@
           <div class="result-main">
             <div class="label">Tempo necessário</div>
             <div class="big" id="resultMain">--</div>
-            <div class="sub" id="resultSub">Preencha a stamina atual e a stamina alvo.</div>
+            <div class="sub" id="resultSub">--</div>
+            <div class="sub-secondary" id="resultSubSecondary"></div>
 
             <div class="meter">
               <div id="meterFill"></div>
             </div>
           </div>
 
-          <div class="stats">
-            <div class="stat">
-              <div class="k">Stamina atual</div>
-              <div class="v" id="statCurrent">--</div>
-            </div>
-
-            <div class="stat">
-              <div class="k">Stamina alvo</div>
-              <div class="v" id="statTarget">--</div>
-            </div>
-
-            <div class="stat">
-              <div class="k">Parte verde</div>
+          <div class="recovery-breakdown">
+            <div class="recovery-item">
+              <div class="k"><span class="dot green"></span> Stamina verde</div>
               <div class="v" id="statGreen">--</div>
+              <div class="s" id="statGreenSupport">--</div>
             </div>
 
-            <div class="stat">
-              <div class="k">Parte amarela / vermelha</div>
-              <div class="v" id="statOther">--</div>
+            <div class="recovery-item">
+              <div class="k"><span class="dot yellow"></span> Stamina amarela</div>
+              <div class="v" id="statYellow">--</div>
+              <div class="s" id="statYellowSupport">--</div>
             </div>
 
-            <div class="stat">
-              <div class="k">Leva</div>
-              <div class="v" id="statDuration">--</div>
-            </div>
-
-            <div class="stat">
-              <div class="k">Fica pronta em</div>
-              <div class="v" id="statReadyAt">--</div>
+            <div class="recovery-item">
+              <div class="k"><span class="dot red"></span> Stamina vermelha</div>
+              <div class="v" id="statRed">--</div>
+              <div class="s" id="statRedSupport">--</div>
             </div>
           </div>
 
-          <div class="explain-box">
-            <h4>Entenda as cores</h4>
+          <div class="legend-box">
+            <h4>Entenda as regras</h4>
             <div class="legend">
-              <div class="legend-item">
-                <span class="dot green"></span>
-                <span><strong>Verde:</strong> parte acima de 39h.</span>
-              </div>
-              <div class="legend-item">
-                <span class="dot yellow"></span>
-                <span><strong>Amarela:</strong> entre 14h e 39h.</span>
-              </div>
-              <div class="legend-item">
-                <span class="dot red"></span>
-                <span><strong>Vermelha:</strong> abaixo de 14h.</span>
-              </div>
+              <div class="legend-item"><strong>Verde:</strong> acima de 39h.</div>
+              <div class="legend-item"><strong>Amarela:</strong> entre 14h e 39h.</div>
+              <div class="legend-item"><strong>Vermelha:</strong> abaixo de 14h.</div>
             </div>
           </div>
 
-          <div class="info-box" style="margin-top:14px; margin-bottom:0;">
-            <strong>Regra usada:</strong> abaixo de 39h a recuperação é mais rápida.
-            De 39h até 42h, a recuperação é mais lenta.
+          <div class="rule-box">
+            <h4>Recuperação</h4>
+            <p>
+              <strong>Abaixo de 39h</strong> a recuperação é mais rápida.  
+              De <strong>39h até 42h</strong>, a recuperação é mais lenta.
+            </p>
+            <p style="margin-top: 8px;">
+              Nesta calculadora, cada <strong>1 minuto de stamina</strong> precisa de
+              <strong>3 minutos offline</strong> abaixo de 39h, e de
+              <strong>6 minutos offline</strong> entre 39h e 42h.
+            </p>
           </div>
         </div>
       </section>
@@ -696,14 +660,15 @@
     const errorBox = document.getElementById('errorBox');
     const resultMain = document.getElementById('resultMain');
     const resultSub = document.getElementById('resultSub');
+    const resultSubSecondary = document.getElementById('resultSubSecondary');
     const meterFill = document.getElementById('meterFill');
 
-    const statCurrent = document.getElementById('statCurrent');
-    const statTarget = document.getElementById('statTarget');
     const statGreen = document.getElementById('statGreen');
-    const statOther = document.getElementById('statOther');
-    const statDuration = document.getElementById('statDuration');
-    const statReadyAt = document.getElementById('statReadyAt');
+    const statYellow = document.getElementById('statYellow');
+    const statRed = document.getElementById('statRed');
+    const statGreenSupport = document.getElementById('statGreenSupport');
+    const statYellowSupport = document.getElementById('statYellowSupport');
+    const statRedSupport = document.getElementById('statRedSupport');
 
     const MAX_STAMINA_MINUTES = 42 * 60;
     const GREEN_START_MINUTES = 39 * 60;
@@ -712,8 +677,8 @@
 
     function populateTimezones() {
       const zones = [
-        'America/Manaus',
         'America/Sao_Paulo',
+        'America/Manaus',
         'America/New_York',
         'America/Chicago',
         'America/Denver',
@@ -740,11 +705,30 @@
       return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
     }
 
+    function autoFormatStaminaInput(value) {
+      const digits = value.replace(/\D/g, '').slice(0, 4);
+
+      if (digits.length === 0) return '';
+      if (digits.length <= 2) return digits;
+      if (digits.length === 3) return `${digits.slice(0, 2)}:${digits.slice(2)}`;
+      return `${digits.slice(0, 2)}:${digits.slice(2, 4)}`;
+    }
+
+    function normalizeStaminaValue(value) {
+      const cleaned = value.trim().replace(',', ':');
+
+      if (/^\d{1,2}$/.test(cleaned)) {
+        return `${cleaned}:00`;
+      }
+
+      return cleaned;
+    }
+
     function parseStamina(value) {
       if (!value) return null;
 
-      const cleaned = value.trim().replace(',', ':');
-      const match = cleaned.match(/^(\d{1,2}):([0-5]\d)$/);
+      const normalized = normalizeStaminaValue(value);
+      const match = normalized.match(/^(\d{1,2}):([0-5]\d)$/);
       if (!match) return null;
 
       const hours = Number(match[1]);
@@ -785,32 +769,39 @@
       if (cls) input.classList.add(cls);
     }
 
-    function calculateOfflineRecoveryTime(currentMinutes, targetMinutes) {
+    function calculateZoneGain(current, target, zoneMin, zoneMax) {
+      return Math.max(0, Math.min(target, zoneMax) - Math.max(current, zoneMin));
+    }
+
+    function calculateOfflineRecovery(currentMinutes, targetMinutes) {
       if (targetMinutes <= currentMinutes) {
         return {
           totalRecoveryMinutes: 0,
-          greenPart: 0,
-          otherPart: 0
+          greenGain: 0,
+          yellowGain: 0,
+          redGain: 0,
+          greenRecovery: 0,
+          yellowRecovery: 0,
+          redRecovery: 0
         };
       }
 
-      let recovery = 0;
+      const redGain = calculateZoneGain(currentMinutes, targetMinutes, 0, YELLOW_START_MINUTES);
+      const yellowGain = calculateZoneGain(currentMinutes, targetMinutes, YELLOW_START_MINUTES, GREEN_START_MINUTES);
+      const greenGain = calculateZoneGain(currentMinutes, targetMinutes, GREEN_START_MINUTES, MAX_STAMINA_MINUTES);
 
-      const belowGreenStart = Math.min(targetMinutes, GREEN_START_MINUTES) - currentMinutes;
-      const belowGreenGain = Math.max(0, belowGreenStart);
-
-      const currentAboveGreen = Math.max(currentMinutes, GREEN_START_MINUTES);
-      const targetAboveGreen = Math.max(Math.min(targetMinutes, MAX_STAMINA_MINUTES), GREEN_START_MINUTES);
-      const greenGain = Math.max(0, targetAboveGreen - currentAboveGreen);
-
-      recovery += belowGreenGain * 3;
-      recovery += greenGain * 6;
-      recovery += OFFLINE_INITIAL_DELAY;
+      const redRecovery = redGain * 3;
+      const yellowRecovery = yellowGain * 3;
+      const greenRecovery = greenGain * 6;
 
       return {
-        totalRecoveryMinutes: recovery,
-        greenPart: greenGain,
-        otherPart: belowGreenGain
+        totalRecoveryMinutes: redRecovery + yellowRecovery + greenRecovery + OFFLINE_INITIAL_DELAY,
+        greenGain,
+        yellowGain,
+        redGain,
+        greenRecovery,
+        yellowRecovery,
+        redRecovery
       };
     }
 
@@ -835,16 +826,20 @@
       errorBox.textContent = '';
     }
 
-    function resetResult(clearCurrentToo = true) {
-      resultMain.textContent = '--';
-      resultSub.textContent = 'Preencha a stamina atual e a stamina alvo.';
-      meterFill.style.width = '0%';
-      statTarget.textContent = '--';
+    function syncQuickButtons() {
+      const targetValue = normalizeStaminaValue(targetStaminaInput.value.trim());
+      quickButtons.forEach(btn => {
+        btn.classList.toggle('active-quick', btn.dataset.target === targetValue);
+      });
+    }
+
+    function resetBreakdown() {
       statGreen.textContent = '--';
-      statOther.textContent = '--';
-      statDuration.textContent = '--';
-      statReadyAt.textContent = '--';
-      if (clearCurrentToo) statCurrent.textContent = '--';
+      statYellow.textContent = '--';
+      statRed.textContent = '--';
+      statGreenSupport.textContent = '--';
+      statYellowSupport.textContent = '--';
+      statRedSupport.textContent = '--';
     }
 
     function updateCalculator() {
@@ -853,65 +848,105 @@
 
       applyInputColor(currentStaminaInput, current);
       applyInputColor(targetStaminaInput, target);
-
-      statCurrent.textContent = current !== null ? formatMinutesAsStamina(current) : '--';
-      statTarget.textContent = target !== null ? formatMinutesAsStamina(target) : '--';
+      syncQuickButtons();
 
       if (current === null) {
         showError('Digite a stamina atual no formato 00:00 até 42:00.');
-        resetResult();
+        resultMain.textContent = '--';
+        resultSub.textContent = '--';
+        resultSubSecondary.textContent = '';
+        meterFill.style.width = '0%';
+        resetBreakdown();
         return;
       }
 
       if (target === null) {
         showError('Digite a stamina alvo no formato 00:00 até 42:00.');
-        resetResult(false);
+        resultMain.textContent = '--';
+        resultSub.textContent = '--';
+        resultSubSecondary.textContent = '';
+        meterFill.style.width = '0%';
+        resetBreakdown();
         return;
       }
 
       if (target < current) {
         showError('A stamina alvo não pode ser menor que a stamina atual.');
-        resetResult(false);
+        resultMain.textContent = '--';
+        resultSub.textContent = '--';
+        resultSubSecondary.textContent = '';
+        meterFill.style.width = '0%';
+        resetBreakdown();
         return;
       }
 
       hideError();
 
-      const calc = calculateOfflineRecoveryTime(current, target);
+      const calc = calculateOfflineRecovery(current, target);
       const totalGain = Math.max(0, target - current);
       const progressPercent = totalGain === 0 ? 100 : Math.max(0, Math.min(100, (current / target) * 100));
 
       meterFill.style.width = `${progressPercent}%`;
-
       resultMain.textContent = calc.totalRecoveryMinutes === 0 ? 'Pronta' : formatDuration(calc.totalRecoveryMinutes);
-
-      let subText = `Para sair de ${formatMinutesAsStamina(current)} e chegar em ${formatMinutesAsStamina(target)}.`;
 
       if (startTimeInput.value) {
         const startDate = new Date(startTimeInput.value);
 
         if (!isNaN(startDate.getTime())) {
           const readyDate = new Date(startDate.getTime() + calc.totalRecoveryMinutes * 60000);
-          const tz = timezoneSelect.value;
-          const readyFormatted = formatInTimezone(readyDate, tz);
-
-          subText += ` Fica pronta em ${readyFormatted}.`;
-          statReadyAt.textContent = readyFormatted;
+          const readyFormatted = formatInTimezone(readyDate, timezoneSelect.value);
+          resultSub.textContent = `em ${readyFormatted}`;
         } else {
-          statReadyAt.textContent = '--';
+          resultSub.textContent = `de ${formatMinutesAsStamina(current)} até ${formatMinutesAsStamina(target)}`;
         }
       } else {
-        statReadyAt.textContent = 'Data opcional';
+        resultSub.textContent = `de ${formatMinutesAsStamina(current)} até ${formatMinutesAsStamina(target)}`;
       }
 
-      resultSub.textContent = subText;
-      statDuration.textContent = calc.totalRecoveryMinutes === 0 ? 'Agora' : formatDuration(calc.totalRecoveryMinutes);
-      statGreen.textContent = calc.greenPart > 0 ? formatMinutesAsStamina(calc.greenPart) : '00:00';
-      statOther.textContent = calc.otherPart > 0 ? formatMinutesAsStamina(calc.otherPart) : '00:00';
+      resultSubSecondary.textContent = calc.totalRecoveryMinutes === 0
+        ? 'Sua stamina já está na meta desejada.'
+        : 'Os 10 minutos iniciais offline já estão incluídos.';
+
+      statGreen.textContent = calc.greenRecovery > 0 ? formatDuration(calc.greenRecovery) : '0 min';
+      statYellow.textContent = calc.yellowRecovery > 0 ? formatDuration(calc.yellowRecovery) : '0 min';
+      statRed.textContent = calc.redRecovery > 0 ? formatDuration(calc.redRecovery) : '0 min';
+
+      statGreenSupport.textContent = calc.greenGain > 0
+        ? `${formatMinutesAsStamina(calc.greenGain)} de stamina para recuperar`
+        : 'Nenhum ganho nessa faixa';
+
+      statYellowSupport.textContent = calc.yellowGain > 0
+        ? `${formatMinutesAsStamina(calc.yellowGain)} de stamina para recuperar`
+        : 'Nenhum ganho nessa faixa';
+
+      statRedSupport.textContent = calc.redGain > 0
+        ? `${formatMinutesAsStamina(calc.redGain)} de stamina para recuperar`
+        : 'Nenhum ganho nessa faixa';
+    }
+
+    function attachAutoFormat(input) {
+      input.addEventListener('input', () => {
+        const formatted = autoFormatStaminaInput(input.value);
+        input.value = formatted;
+        updateCalculator();
+      });
+
+      input.addEventListener('blur', () => {
+        if (!input.value) return;
+        const normalized = normalizeStaminaValue(input.value);
+        const parsed = parseStamina(normalized);
+        if (parsed !== null) {
+          input.value = formatMinutesAsStamina(parsed);
+        }
+        updateCalculator();
+      });
     }
 
     function attachEvents() {
-      [currentStaminaInput, targetStaminaInput, startTimeInput, timezoneSelect].forEach(el => {
+      attachAutoFormat(currentStaminaInput);
+      attachAutoFormat(targetStaminaInput);
+
+      [startTimeInput, timezoneSelect].forEach(el => {
         el.addEventListener('input', updateCalculator);
         el.addEventListener('change', updateCalculator);
       });
@@ -931,6 +966,9 @@
 
     populateTimezones();
     attachEvents();
+
+    currentStaminaInput.value = '34:30';
+    targetStaminaInput.value = '42:00';
     updateCalculator();
   </script>
 </body>
