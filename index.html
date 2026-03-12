@@ -1,975 +1,369 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ex Tibiano - Stamina Calculator</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    :root {
-      --bg: #121212;
-      --bg-soft: #0f0f0f;
-      --panel: #1a1a1a;
-      --panel-2: #151515;
-      --border: #2f2f2f;
-      --border-soft: #252525;
-      --text: #f1f1f1;
-      --muted: #bdbdbd;
-      --gold: #d7a84d;
-      --gold-glow: rgba(215, 168, 77, 0.12);
-      --green: #57d37c;
-      --yellow: #ffd24f;
-      --red: #ff6b6b;
-      --blue: #7eb6ff;
-      --shadow: 0 14px 38px rgba(0, 0, 0, 0.28);
-      --radius-xl: 22px;
-      --radius-lg: 18px;
-      --radius-md: 14px;
-    }
-
-    body {
-      background:
-        radial-gradient(circle at top, rgba(215, 168, 77, 0.07), transparent 30%),
-        linear-gradient(180deg, #0d0d0d, #121212 28%, #101010);
-      color: var(--text);
-      font-family: Arial, Helvetica, sans-serif;
-      min-height: 100vh;
-      padding: 16px;
-    }
-
-    .app {
-      max-width: 1080px;
-      margin: 0 auto;
-    }
-
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 18px 20px;
-      margin-bottom: 18px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      box-shadow: var(--shadow);
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      min-width: 0;
-    }
-
-    .brand-mark {
-      width: 48px;
-      height: 48px;
-      border-radius: 14px;
-      display: grid;
-      place-items: center;
-      font-size: 22px;
-      color: var(--gold);
-      background: linear-gradient(135deg, rgba(215,168,77,0.18), rgba(215,168,77,0.06));
-      border: 1px solid rgba(215,168,77,0.24);
-      flex: 0 0 auto;
-    }
-
-    .brand h1 {
-      font-size: clamp(24px, 3.5vw, 34px);
-      line-height: 1.05;
-      margin-bottom: 4px;
-      color: #fff;
-    }
-
-    .brand p {
-      font-size: 14px;
-      color: var(--muted);
-    }
-
-    .page-chip {
-      min-height: 42px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0 14px;
-      border-radius: 12px;
-      background: rgba(215, 168, 77, 0.10);
-      border: 1px solid rgba(215, 168, 77, 0.24);
-      color: #ffe7b8;
-      font-size: 13px;
-      font-weight: 700;
-      white-space: nowrap;
-      flex: 0 0 auto;
-    }
-
-    .hero {
-      margin-bottom: 18px;
-    }
-
-    .hero-main,
-    .card {
-      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      box-shadow: var(--shadow);
-    }
-
-    .hero-main {
-      padding: 24px;
-    }
-
-    .hero-main h2 {
-      font-size: clamp(28px, 4vw, 40px);
-      line-height: 1.02;
-      margin-bottom: 10px;
-      color: #fff;
-    }
-
-    .hero-main p {
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.55;
-      max-width: 760px;
-    }
-
-    .main-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
-      align-items: start;
-    }
-
-    .card-body {
-      padding: 20px;
-    }
-
-    .section-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 12px;
-      font-weight: 700;
-      color: #bed9ff;
-      background: rgba(126,182,255,0.08);
-      border: 1px solid rgba(126,182,255,0.18);
-      padding: 8px 12px;
-      border-radius: 999px;
-      margin-bottom: 14px;
-    }
-
-    .card h3 {
-      font-size: clamp(24px, 3.5vw, 30px);
-      margin-bottom: 8px;
-      color: #fff;
-    }
-
-    .desc {
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.5;
-      margin-bottom: 18px;
-    }
-
-    .row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin-bottom: 14px;
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .field label {
-      color: #f2f2f2;
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .field small {
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.35;
-    }
-
-    input,
-    select,
-    button {
-      font: inherit;
-    }
-
-    input[type="text"],
-    input[type="datetime-local"],
-    select {
-      width: 100%;
-      min-height: 50px;
-      background: #111111;
-      color: var(--text);
-      border: 1px solid #333333;
-      border-radius: 14px;
-      padding: 12px 14px;
-      outline: none;
-      transition: 0.18s ease;
-    }
-
-    input[type="text"]:focus,
-    input[type="datetime-local"]:focus,
-    select:focus {
-      border-color: var(--gold);
-      box-shadow: 0 0 0 3px var(--gold-glow);
-    }
-
-    .input-green {
-      color: var(--green) !important;
-      border-color: rgba(87,211,124,0.35) !important;
-      font-weight: 800;
-    }
-
-    .input-yellow {
-      color: var(--yellow) !important;
-      border-color: rgba(255,210,79,0.35) !important;
-      font-weight: 800;
-    }
-
-    .input-red {
-      color: var(--red) !important;
-      border-color: rgba(255,107,107,0.35) !important;
-      font-weight: 800;
-    }
-
-    .target-box,
-    .info-box,
-    .legend-box,
-    .rule-box {
-      background: #141414;
-      border: 1px solid var(--border-soft);
-      border-radius: var(--radius-lg);
-      padding: 14px;
-    }
-
-    .target-box {
-      margin-bottom: 14px;
-    }
-
-    .target-box-top {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 12px;
-      align-items: end;
-      margin-bottom: 12px;
-    }
-
-    .target-quick-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .quick-btn,
-    .now-btn {
-      min-height: 40px;
-      padding: 0 14px;
-      border-radius: 12px;
-      border: 1px solid #343434;
-      background: #1b1b1b;
-      color: #f4f4f4;
-      cursor: pointer;
-      transition: 0.18s ease;
-      font-weight: 700;
-    }
-
-    .quick-btn:hover,
-    .now-btn:hover {
-      background: #232323;
-      border-color: #474747;
-    }
-
-    .quick-btn.active-quick {
-      border-color: rgba(215,168,77,0.45);
-      background: rgba(215,168,77,0.12);
-      color: #ffe6b3;
-    }
-
-    .info-box {
-      margin-bottom: 14px;
-      color: #dddddd;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    .info-box strong,
-    .rule-box strong,
-    .legend-box strong {
-      color: #fff;
-    }
-
-    .now-btn {
-      width: 100%;
-      background: rgba(215,168,77,0.08);
-      border-color: rgba(215,168,77,0.22);
-      color: #ffe7b8;
-    }
-
-    .or-divider {
-      text-align: center;
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 700;
-      margin: 10px 0;
-    }
-
-    .error {
-      display: none;
-      background: rgba(255,107,107,0.08);
-      border: 1px solid rgba(255,107,107,0.18);
-      color: #ff9d9d;
-      border-radius: 14px;
-      padding: 12px 14px;
-      font-size: 14px;
-      line-height: 1.4;
-      margin-top: 6px;
-    }
-
-    .result-main {
-      background: linear-gradient(180deg, rgba(215,168,77,0.14), rgba(215,168,77,0.04));
-      border: 1px solid rgba(215,168,77,0.22);
-      border-radius: var(--radius-lg);
-      padding: 22px 18px;
-      margin-bottom: 14px;
-    }
-
-    .result-main .label {
-      color: #f3d79a;
-      font-size: 13px;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    .result-main .big {
-      font-size: clamp(38px, 6vw, 56px);
-      line-height: 1;
-      font-weight: 900;
-      margin-bottom: 10px;
-      color: #fff;
-      letter-spacing: -0.02em;
-    }
-
-    .result-main .sub {
-      color: #f0e2c0;
-      font-size: 20px;
-      font-weight: 800;
-      line-height: 1.3;
-    }
-
-    .result-main .sub-secondary {
-      color: #e3e3e3;
-      font-size: 14px;
-      line-height: 1.45;
-      margin-top: 8px;
-    }
-
-    .meter {
-      width: 100%;
-      height: 12px;
-      background: #0f0f0f;
-      border: 1px solid #2c2c2c;
-      border-radius: 999px;
-      overflow: hidden;
-      margin-top: 16px;
-    }
-
-    .meter > div {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, var(--red), var(--yellow), var(--green));
-      transition: width 0.25s ease;
-    }
-
-    .recovery-breakdown {
-      display: grid;
-      gap: 12px;
-      margin-bottom: 14px;
-    }
-
-    .recovery-item {
-      background: #141414;
-      border: 1px solid var(--border-soft);
-      border-radius: var(--radius-lg);
-      padding: 15px;
-    }
-
-    .recovery-item .k {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--muted);
-      font-size: 12px;
-      margin-bottom: 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
-    }
-
-    .recovery-item .v {
-      color: #fff;
-      font-size: 20px;
-      font-weight: 800;
-      line-height: 1.25;
-    }
-
-    .recovery-item .s {
-      color: #bcbcbc;
-      font-size: 13px;
-      line-height: 1.35;
-      margin-top: 6px;
-    }
-
-    .dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 999px;
-      flex: 0 0 auto;
-    }
-
-    .dot.green { background: var(--green); }
-    .dot.yellow { background: var(--yellow); }
-    .dot.red { background: var(--red); }
-
-    .legend-box h4,
-    .rule-box h4 {
-      font-size: 16px;
-      margin-bottom: 10px;
-      color: #fff;
-    }
-
-    .legend {
-      display: grid;
-      gap: 8px;
-    }
-
-    .legend-item {
-      color: #dddddd;
-      font-size: 14px;
-      line-height: 1.45;
-    }
-
-    .rule-box {
-      margin-top: 14px;
-      color: #dddddd;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    .footer-note {
-      margin-top: 14px;
-      text-align: center;
-      color: #828282;
-      font-size: 12px;
-    }
-
-    @media (max-width: 980px) {
-      .main-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 760px) {
-      .topbar {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .page-chip {
-        width: 100%;
-      }
-
-      .row,
-      .target-box-top {
-        grid-template-columns: 1fr;
-      }
-
-      .hero-main,
-      .card-body {
-        padding: 16px;
-      }
-
-      body {
-        padding: 12px;
-      }
-
-      .result-main .sub {
-        font-size: 17px;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="app">
-    <header class="topbar">
-      <div class="brand">
-        <div class="brand-mark">⏳</div>
-        <div>
-          <h1>Ex Tibiano</h1>
-          <p>Somos todos Ex Ex tibianos.</p>
-        </div>
-      </div>
-      <div class="page-chip">Stamina Calculator</div>
-    </header>
-
-    <section class="hero">
-      <div class="hero-main">
-        <h2>Calculadora de Stamina</h2>
-        <p>
-          Veja o tempo para a sua stamina chegar na meta desejada.
-          Ou descubra a data e hora exata em que ela ficará pronta.
-        </p>
-      </div>
-    </section>
-
-    <section class="main-grid">
-      <section class="card">
-        <div class="card-body">
-          <div class="section-tag">⏳ Dados da stamina</div>
-          <h3>Preencha os dados</h3>
-
-          <div class="row">
-            <div class="field">
-              <label for="currentStamina">Stamina atual</label>
-              <input id="currentStamina" type="text" value="34:30" placeholder="Ex.: 34:30" maxlength="5" inputmode="numeric" />
-            </div>
-          </div>
-
-          <div class="target-box">
-            <div class="target-box-top">
-              <div class="field" style="margin: 0;">
-                <label for="targetStamina">Stamina alvo</label>
-                <input id="targetStamina" type="text" value="42:00" placeholder="Ex.: 42:00" maxlength="5" inputmode="numeric" />
-              </div>
-            </div>
-
-            <div class="target-quick-buttons">
-              <button class="quick-btn" type="button" data-target="37:00">37:00</button>
-              <button class="quick-btn" type="button" data-target="38:00">38:00</button>
-              <button class="quick-btn" type="button" data-target="39:00">39:00</button>
-              <button class="quick-btn" type="button" data-target="40:00">40:00</button>
-              <button class="quick-btn" type="button" data-target="42:00">42:00</button>
-            </div>
-          </div>
-
-          <div class="info-box">
-            <strong>Recuperação offline:</strong> os <strong>10 minutos iniciais</strong> já estão imbutidos no cálculo.
-          </div>
-
-          <div class="field" style="margin-bottom: 0;">
-            <button class="now-btn" id="useNowBtn" type="button">Usar data e hora atual</button>
-          </div>
-
-          <div class="or-divider">Ou</div>
-
-          <div class="field" style="margin-bottom: 14px;">
-            <label for="startTime">Data e hora inicial (opcional)</label>
-            <input id="startTime" type="datetime-local" />
-          </div>
-
-          <div class="field">
-            <label for="timezoneSelect">Fuso horário (opcional)</label>
-            <select id="timezoneSelect"></select>
-          </div>
-
-          <div class="error" id="errorBox"></div>
-        </div>
-      </section>
-
-      <section class="card">
-        <div class="card-body">
-          <div class="section-tag">📈 Resultado</div>
-
-          <div class="result-main">
-            <div class="label">Tempo necessário</div>
-            <div class="big" id="resultMain">--</div>
-            <div class="sub" id="resultSub">--</div>
-            <div class="sub-secondary" id="resultSubSecondary"></div>
-
-            <div class="meter">
-              <div id="meterFill"></div>
-            </div>
-          </div>
-
-          <div class="recovery-breakdown">
-            <div class="recovery-item">
-              <div class="k"><span class="dot green"></span> Stamina verde</div>
-              <div class="v" id="statGreen">--</div>
-              <div class="s" id="statGreenSupport">--</div>
-            </div>
-
-            <div class="recovery-item">
-              <div class="k"><span class="dot yellow"></span> Stamina amarela</div>
-              <div class="v" id="statYellow">--</div>
-              <div class="s" id="statYellowSupport">--</div>
-            </div>
-
-            <div class="recovery-item">
-              <div class="k"><span class="dot red"></span> Stamina vermelha</div>
-              <div class="v" id="statRed">--</div>
-              <div class="s" id="statRedSupport">--</div>
-            </div>
-          </div>
-
-          <div class="legend-box">
-            <h4>Entenda as regras</h4>
-            <div class="legend">
-              <div class="legend-item"><strong>Verde:</strong> acima de 39h.</div>
-              <div class="legend-item"><strong>Amarela:</strong> entre 14h e 39h.</div>
-              <div class="legend-item"><strong>Vermelha:</strong> abaixo de 14h.</div>
-            </div>
-          </div>
-
-          <div class="rule-box">
-            <h4>Recuperação</h4>
-            <p>
-              <strong>Abaixo de 39h</strong> a recuperação é mais rápida.  
-              De <strong>39h até 42h</strong>, a recuperação é mais lenta.
-            </p>
-            <p style="margin-top: 8px;">
-              Nesta calculadora, cada <strong>1 minuto de stamina</strong> precisa de
-              <strong>3 minutos offline</strong> abaixo de 39h, e de
-              <strong>6 minutos offline</strong> entre 39h e 42h.
-            </p>
-          </div>
-        </div>
-      </section>
-    </section>
-  </div>
-
-  <script>
-    const currentStaminaInput = document.getElementById('currentStamina');
-    const targetStaminaInput = document.getElementById('targetStamina');
-    const startTimeInput = document.getElementById('startTime');
-    const timezoneSelect = document.getElementById('timezoneSelect');
-    const useNowBtn = document.getElementById('useNowBtn');
-    const quickButtons = document.querySelectorAll('.quick-btn');
-
-    const errorBox = document.getElementById('errorBox');
-    const resultMain = document.getElementById('resultMain');
-    const resultSub = document.getElementById('resultSub');
-    const resultSubSecondary = document.getElementById('resultSubSecondary');
-    const meterFill = document.getElementById('meterFill');
-
-    const statGreen = document.getElementById('statGreen');
-    const statYellow = document.getElementById('statYellow');
-    const statRed = document.getElementById('statRed');
-    const statGreenSupport = document.getElementById('statGreenSupport');
-    const statYellowSupport = document.getElementById('statYellowSupport');
-    const statRedSupport = document.getElementById('statRedSupport');
-
-    const MAX_STAMINA_MINUTES = 42 * 60;
-    const GREEN_START_MINUTES = 39 * 60;
-    const YELLOW_START_MINUTES = 14 * 60;
-    const OFFLINE_INITIAL_DELAY = 10;
-
-    function populateTimezones() {
-      const zones = [
-        'America/Sao_Paulo',
-        'America/Manaus',
-        'America/New_York',
-        'America/Chicago',
-        'America/Denver',
-        'America/Los_Angeles',
-        'Europe/London',
-        'Europe/Berlin',
-        'Europe/Madrid',
-        'Europe/Lisbon',
-        'UTC'
-      ];
-
-      const detected = Intl.DateTimeFormat().resolvedOptions().timeZone || 'America/Manaus';
-      const finalZones = [...new Set([detected, ...zones])];
-
-      timezoneSelect.innerHTML = finalZones
-        .map(zone => `<option value="${zone}">${zone}</option>`)
-        .join('');
-
-      timezoneSelect.value = detected;
-    }
-
-    function formatDateTimeLocal(date) {
-      const pad = (n) => String(n).padStart(2, '0');
-      return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
-    }
-
-    function autoFormatStaminaInput(value) {
-      const digits = value.replace(/\D/g, '').slice(0, 4);
-
-      if (digits.length === 0) return '';
-      if (digits.length <= 2) return digits;
-      if (digits.length === 3) return `${digits.slice(0, 2)}:${digits.slice(2)}`;
-      return `${digits.slice(0, 2)}:${digits.slice(2, 4)}`;
-    }
-
-    function normalizeStaminaValue(value) {
-      const cleaned = value.trim().replace(',', ':');
-
-      if (/^\d{1,2}$/.test(cleaned)) {
-        return `${cleaned}:00`;
-      }
-
-      return cleaned;
-    }
-
-    function parseStamina(value) {
-      if (!value) return null;
-
-      const normalized = normalizeStaminaValue(value);
-      const match = normalized.match(/^(\d{1,2}):([0-5]\d)$/);
-      if (!match) return null;
-
-      const hours = Number(match[1]);
-      const minutes = Number(match[2]);
-      const total = hours * 60 + minutes;
-
-      if (total < 0 || total > MAX_STAMINA_MINUTES) return null;
-      return total;
-    }
-
-    function formatMinutesAsStamina(totalMinutes) {
-      const safe = Math.max(0, Math.min(MAX_STAMINA_MINUTES, Math.round(totalMinutes)));
-      const hours = Math.floor(safe / 60);
-      const minutes = safe % 60;
-      return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
-    }
-
-    function formatDuration(totalMinutes) {
-      const safe = Math.max(0, Math.round(totalMinutes));
-      const hours = Math.floor(safe / 60);
-      const minutes = safe % 60;
-
-      if (hours === 0) return `${minutes} min`;
-      if (minutes === 0) return `${hours}h`;
-      return `${hours}h ${minutes}min`;
-    }
-
-    function getStaminaColorClass(totalMinutes) {
-      if (totalMinutes === null) return '';
-      if (totalMinutes < YELLOW_START_MINUTES) return 'input-red';
-      if (totalMinutes < GREEN_START_MINUTES) return 'input-yellow';
-      return 'input-green';
-    }
-
-    function applyInputColor(input, totalMinutes) {
-      input.classList.remove('input-green', 'input-yellow', 'input-red');
-      const cls = getStaminaColorClass(totalMinutes);
-      if (cls) input.classList.add(cls);
-    }
-
-    function calculateZoneGain(current, target, zoneMin, zoneMax) {
-      return Math.max(0, Math.min(target, zoneMax) - Math.max(current, zoneMin));
-    }
-
-    function calculateOfflineRecovery(currentMinutes, targetMinutes) {
-      if (targetMinutes <= currentMinutes) {
-        return {
-          totalRecoveryMinutes: 0,
-          greenGain: 0,
-          yellowGain: 0,
-          redGain: 0,
-          greenRecovery: 0,
-          yellowRecovery: 0,
-          redRecovery: 0
-        };
-      }
-
-      const redGain = calculateZoneGain(currentMinutes, targetMinutes, 0, YELLOW_START_MINUTES);
-      const yellowGain = calculateZoneGain(currentMinutes, targetMinutes, YELLOW_START_MINUTES, GREEN_START_MINUTES);
-      const greenGain = calculateZoneGain(currentMinutes, targetMinutes, GREEN_START_MINUTES, MAX_STAMINA_MINUTES);
-
-      const redRecovery = redGain * 3;
-      const yellowRecovery = yellowGain * 3;
-      const greenRecovery = greenGain * 6;
-
-      return {
-        totalRecoveryMinutes: redRecovery + yellowRecovery + greenRecovery + OFFLINE_INITIAL_DELAY,
-        greenGain,
-        yellowGain,
-        redGain,
-        greenRecovery,
-        yellowRecovery,
-        redRecovery
-      };
-    }
-
-    function formatInTimezone(date, timeZone) {
-      return new Intl.DateTimeFormat('pt-BR', {
-        timeZone,
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit'
-      }).format(date);
-    }
-
-    function showError(message) {
-      errorBox.style.display = 'block';
-      errorBox.textContent = message;
-    }
-
-    function hideError() {
-      errorBox.style.display = 'none';
-      errorBox.textContent = '';
-    }
-
-    function syncQuickButtons() {
-      const targetValue = normalizeStaminaValue(targetStaminaInput.value.trim());
-      quickButtons.forEach(btn => {
-        btn.classList.toggle('active-quick', btn.dataset.target === targetValue);
-      });
-    }
-
-    function resetBreakdown() {
-      statGreen.textContent = '--';
-      statYellow.textContent = '--';
-      statRed.textContent = '--';
-      statGreenSupport.textContent = '--';
-      statYellowSupport.textContent = '--';
-      statRedSupport.textContent = '--';
-    }
-
-    function updateCalculator() {
-      const current = parseStamina(currentStaminaInput.value);
-      const target = parseStamina(targetStaminaInput.value);
-
-      applyInputColor(currentStaminaInput, current);
-      applyInputColor(targetStaminaInput, target);
-      syncQuickButtons();
-
-      if (current === null) {
-        showError('Digite a stamina atual no formato 00:00 até 42:00.');
-        resultMain.textContent = '--';
-        resultSub.textContent = '--';
-        resultSubSecondary.textContent = '';
-        meterFill.style.width = '0%';
-        resetBreakdown();
-        return;
-      }
-
-      if (target === null) {
-        showError('Digite a stamina alvo no formato 00:00 até 42:00.');
-        resultMain.textContent = '--';
-        resultSub.textContent = '--';
-        resultSubSecondary.textContent = '';
-        meterFill.style.width = '0%';
-        resetBreakdown();
-        return;
-      }
-
-      if (target < current) {
-        showError('A stamina alvo não pode ser menor que a stamina atual.');
-        resultMain.textContent = '--';
-        resultSub.textContent = '--';
-        resultSubSecondary.textContent = '';
-        meterFill.style.width = '0%';
-        resetBreakdown();
-        return;
-      }
-
-      hideError();
-
-      const calc = calculateOfflineRecovery(current, target);
-      const totalGain = Math.max(0, target - current);
-      const progressPercent = totalGain === 0 ? 100 : Math.max(0, Math.min(100, (current / target) * 100));
-
-      meterFill.style.width = `${progressPercent}%`;
-      resultMain.textContent = calc.totalRecoveryMinutes === 0 ? 'Pronta' : formatDuration(calc.totalRecoveryMinutes);
-
-      if (startTimeInput.value) {
-        const startDate = new Date(startTimeInput.value);
-
-        if (!isNaN(startDate.getTime())) {
-          const readyDate = new Date(startDate.getTime() + calc.totalRecoveryMinutes * 60000);
-          const readyFormatted = formatInTimezone(readyDate, timezoneSelect.value);
-          resultSub.textContent = `em ${readyFormatted}`;
-        } else {
-          resultSub.textContent = `de ${formatMinutesAsStamina(current)} até ${formatMinutesAsStamina(target)}`;
-        }
-      } else {
-        resultSub.textContent = `de ${formatMinutesAsStamina(current)} até ${formatMinutesAsStamina(target)}`;
-      }
-
-      resultSubSecondary.textContent = calc.totalRecoveryMinutes === 0
-        ? 'Sua stamina já está na meta desejada.'
-        : 'Os 10 minutos iniciais offline já estão incluídos.';
-
-      statGreen.textContent = calc.greenRecovery > 0 ? formatDuration(calc.greenRecovery) : '0 min';
-      statYellow.textContent = calc.yellowRecovery > 0 ? formatDuration(calc.yellowRecovery) : '0 min';
-      statRed.textContent = calc.redRecovery > 0 ? formatDuration(calc.redRecovery) : '0 min';
-
-      statGreenSupport.textContent = calc.greenGain > 0
-        ? `${formatMinutesAsStamina(calc.greenGain)} de stamina para recuperar`
-        : 'Nenhum ganho nessa faixa';
-
-      statYellowSupport.textContent = calc.yellowGain > 0
-        ? `${formatMinutesAsStamina(calc.yellowGain)} de stamina para recuperar`
-        : 'Nenhum ganho nessa faixa';
-
-      statRedSupport.textContent = calc.redGain > 0
-        ? `${formatMinutesAsStamina(calc.redGain)} de stamina para recuperar`
-        : 'Nenhum ganho nessa faixa';
-    }
-
-    function attachAutoFormat(input) {
-      input.addEventListener('input', () => {
-        const formatted = autoFormatStaminaInput(input.value);
-        input.value = formatted;
-        updateCalculator();
-      });
-
-      input.addEventListener('blur', () => {
-        if (!input.value) return;
-        const normalized = normalizeStaminaValue(input.value);
-        const parsed = parseStamina(normalized);
-        if (parsed !== null) {
-          input.value = formatMinutesAsStamina(parsed);
-        }
-        updateCalculator();
-      });
-    }
-
-    function attachEvents() {
-      attachAutoFormat(currentStaminaInput);
-      attachAutoFormat(targetStaminaInput);
-
-      [startTimeInput, timezoneSelect].forEach(el => {
-        el.addEventListener('input', updateCalculator);
-        el.addEventListener('change', updateCalculator);
-      });
-
-      quickButtons.forEach(button => {
-        button.addEventListener('click', () => {
-          targetStaminaInput.value = button.dataset.target;
-          updateCalculator();
-        });
-      });
-
-      useNowBtn.addEventListener('click', () => {
-        startTimeInput.value = formatDateTimeLocal(new Date());
-        updateCalculator();
-      });
-    }
-
-    populateTimezones();
-    attachEvents();
-
-    currentStaminaInput.value = '34:30';
-    targetStaminaInput.value = '42:00';
-    updateCalculator();
-  </script>
-</body>
-</html>
+-- Extensões úteis
+create extension if not exists pgcrypto;
+
+-- =====================================================
+-- TABELA DE BOSSES
+-- =====================================================
+create table if not exists public.bosses (
+  id uuid primary key default gen_random_uuid(),
+  slug text unique not null,
+  name text not null,
+  category text not null default 'daily',
+  difficulty text not null default 'medium',
+  party_type text not null default 'solo', -- solo | duo | team
+  level_min integer,
+  level_max integer,
+  cooldown_hours integer,
+  bosstiary_total_kills integer not null default 25,
+  bosstiary_points integer not null default 0,
+  is_active boolean not null default true,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists idx_bosses_category on public.bosses(category);
+create index if not exists idx_bosses_level_min on public.bosses(level_min);
+create index if not exists idx_bosses_level_max on public.bosses(level_max);
+
+-- =====================================================
+-- PERFIL DO PERSONAGEM
+-- Cada usuário pode ter vários chars.
+-- =====================================================
+create table if not exists public.characters (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  name text not null,
+  world text,
+  vocation text,
+  level integer,
+  is_public boolean not null default false,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists idx_characters_user_id on public.characters(user_id);
+create unique index if not exists idx_characters_user_name_unique on public.characters(user_id, name);
+
+-- =====================================================
+-- ANALYSES DE BOSSES
+-- Cada registro é uma kill/análise colada no site.
+-- =====================================================
+create table if not exists public.boss_analyses (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  character_id uuid references public.characters(id) on delete set null,
+  boss_id uuid not null references public.bosses(id) on delete cascade,
+
+  occurred_at timestamptz not null default now(),
+  analyzer_text_raw text not null,
+  analyzer_text_edited text,
+
+  duration_seconds integer,
+  damage_done numeric(14,2),
+  healing_done numeric(14,2),
+  loot_value numeric(14,2) not null default 0,
+  supply_value numeric(14,2) not null default 0,
+  profit_value numeric(14,2) generated always as (loot_value - supply_value) stored,
+  xp_gained numeric(14,2) default 0,
+
+  was_edited boolean not null default false,
+  edit_count integer not null default 0,
+  confidence_score numeric(5,2) not null default 1.00,
+  is_outlier boolean not null default false,
+  is_flagged boolean not null default false,
+  include_in_global_stats boolean not null default true,
+
+  privacy_mode text not null default 'anonymous',
+  -- private | anonymous | public
+
+  notes text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists idx_boss_analyses_user_id on public.boss_analyses(user_id);
+create index if not exists idx_boss_analyses_boss_id on public.boss_analyses(boss_id);
+create index if not exists idx_boss_analyses_character_id on public.boss_analyses(character_id);
+create index if not exists idx_boss_analyses_occurred_at on public.boss_analyses(occurred_at desc);
+create index if not exists idx_boss_analyses_include_global on public.boss_analyses(include_in_global_stats);
+
+-- =====================================================
+-- CAMPOS EDITADOS MANUALMENTE
+-- Guarda exatamente o que o usuário mexeu.
+-- =====================================================
+create table if not exists public.boss_analysis_edits (
+  id uuid primary key default gen_random_uuid(),
+  analysis_id uuid not null references public.boss_analyses(id) on delete cascade,
+  field_name text not null,
+  old_value text,
+  new_value text,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists idx_boss_analysis_edits_analysis_id on public.boss_analysis_edits(analysis_id);
+
+-- =====================================================
+-- PROGRESSO DE BOSSTIARY POR PERSONAGEM
+-- =====================================================
+create table if not exists public.character_bosstiary_progress (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  character_id uuid not null references public.characters(id) on delete cascade,
+  boss_id uuid not null references public.bosses(id) on delete cascade,
+
+  kills_done integer not null default 0,
+  manual_adjustment integer not null default 0,
+  tracked_from_analyses integer not null default 0,
+
+  total_kills integer generated always as (kills_done + manual_adjustment + tracked_from_analyses) stored,
+  completed boolean not null default false,
+  remaining_to_complete integer not null default 0,
+  points_earned integer not null default 0,
+
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+
+  unique(character_id, boss_id)
+);
+
+create index if not exists idx_character_bosstiary_character_id on public.character_bosstiary_progress(character_id);
+create index if not exists idx_character_bosstiary_boss_id on public.character_bosstiary_progress(boss_id);
+
+-- =====================================================
+-- RANKING CACHE
+-- Facilita o carregamento rápido.
+-- =====================================================
+create table if not exists public.boss_ranking_cache (
+  id uuid primary key default gen_random_uuid(),
+  boss_id uuid not null references public.bosses(id) on delete cascade,
+  level_range_label text not null default 'all',
+  sample_size integer not null default 0,
+  unique_players integer not null default 0,
+  median_profit numeric(14,2) not null default 0,
+  avg_profit_trimmed numeric(14,2) not null default 0,
+  median_loot numeric(14,2) not null default 0,
+  median_supply numeric(14,2) not null default 0,
+  median_xp numeric(14,2) not null default 0,
+  risk_rate numeric(8,4) not null default 0,
+  confidence_label text not null default 'low',
+  updated_at timestamptz not null default now(),
+  unique(boss_id, level_range_label)
+);
+
+-- =====================================================
+-- TRIGGERS DE UPDATED_AT
+-- =====================================================
+create or replace function public.set_updated_at()
+returns trigger
+language plpgsql
+as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
+
+drop trigger if exists trg_characters_updated_at on public.characters;
+create trigger trg_characters_updated_at
+before update on public.characters
+for each row execute function public.set_updated_at();
+
+drop trigger if exists trg_boss_analyses_updated_at on public.boss_analyses;
+create trigger trg_boss_analyses_updated_at
+before update on public.boss_analyses
+for each row execute function public.set_updated_at();
+
+drop trigger if exists trg_character_bosstiary_progress_updated_at on public.character_bosstiary_progress;
+create trigger trg_character_bosstiary_progress_updated_at
+before update on public.character_bosstiary_progress
+for each row execute function public.set_updated_at();
+
+-- =====================================================
+-- FUNÇÃO: recalcula remaining_to_complete e completed
+-- =====================================================
+create or replace function public.recalc_bosstiary_progress(p_character_id uuid, p_boss_id uuid)
+returns void
+language plpgsql
+as $$
+declare
+  v_total integer;
+  v_required integer;
+  v_points integer;
+begin
+  select total_kills
+    into v_total
+  from public.character_bosstiary_progress
+  where character_id = p_character_id and boss_id = p_boss_id;
+
+  select bosstiary_total_kills, bosstiary_points
+    into v_required, v_points
+  from public.bosses
+  where id = p_boss_id;
+
+  update public.character_bosstiary_progress
+  set
+    remaining_to_complete = greatest(v_required - coalesce(v_total, 0), 0),
+    completed = (coalesce(v_total, 0) >= v_required),
+    points_earned = case when coalesce(v_total, 0) >= v_required then v_points else 0 end
+  where character_id = p_character_id and boss_id = p_boss_id;
+end;
+$$;
+
+-- =====================================================
+-- FUNÇÃO: soma +1 no tracked_from_analyses ao salvar análise
+-- =====================================================
+create or replace function public.increment_bosstiary_from_analysis()
+returns trigger
+language plpgsql
+as $$
+begin
+  if new.character_id is not null then
+    insert into public.character_bosstiary_progress (
+      user_id,
+      character_id,
+      boss_id,
+      tracked_from_analyses,
+      remaining_to_complete
+    )
+    values (
+      new.user_id,
+      new.character_id,
+      new.boss_id,
+      1,
+      0
+    )
+    on conflict (character_id, boss_id)
+    do update set tracked_from_analyses = public.character_bosstiary_progress.tracked_from_analyses + 1;
+
+    perform public.recalc_bosstiary_progress(new.character_id, new.boss_id);
+  end if;
+
+  return new;
+end;
+$$;
+
+drop trigger if exists trg_increment_bosstiary_from_analysis on public.boss_analyses;
+create trigger trg_increment_bosstiary_from_analysis
+after insert on public.boss_analyses
+for each row execute function public.increment_bosstiary_from_analysis();
+
+-- =====================================================
+-- RLS
+-- =====================================================
+alter table public.bosses enable row level security;
+alter table public.characters enable row level security;
+alter table public.boss_analyses enable row level security;
+alter table public.boss_analysis_edits enable row level security;
+alter table public.character_bosstiary_progress enable row level security;
+alter table public.boss_ranking_cache enable row level security;
+
+-- bosses: leitura geral
+create policy if not exists "bosses_select_all"
+on public.bosses
+for select
+using (true);
+
+-- ranking cache: leitura geral
+create policy if not exists "boss_ranking_cache_select_all"
+on public.boss_ranking_cache
+for select
+using (true);
+
+-- characters: dono lê/escreve
+create policy if not exists "characters_owner_select"
+on public.characters
+for select
+using (auth.uid() = user_id);
+
+create policy if not exists "characters_owner_insert"
+on public.characters
+for insert
+with check (auth.uid() = user_id);
+
+create policy if not exists "characters_owner_update"
+on public.characters
+for update
+using (auth.uid() = user_id)
+with check (auth.uid() = user_id);
+
+create policy if not exists "characters_owner_delete"
+on public.characters
+for delete
+using (auth.uid() = user_id);
+
+-- boss analyses: dono lê/escreve; público só anônimo/público quando permitido
+create policy if not exists "boss_analyses_owner_select"
+on public.boss_analyses
+for select
+using (auth.uid() = user_id);
+
+create policy if not exists "boss_analyses_public_select"
+on public.boss_analyses
+for select
+using (
+  include_in_global_stats = true
+  and privacy_mode in ('anonymous', 'public')
+  and is_flagged = false
+);
+
+create policy if not exists "boss_analyses_owner_insert"
+on public.boss_analyses
+for insert
+with check (auth.uid() = user_id);
+
+create policy if not exists "boss_analyses_owner_update"
+on public.boss_analyses
+for update
+using (auth.uid() = user_id)
+with check (auth.uid() = user_id);
+
+create policy if not exists "boss_analyses_owner_delete"
+on public.boss_analyses
+for delete
+using (auth.uid() = user_id);
+
+-- edits
+create policy if not exists "boss_analysis_edits_owner_select"
+on public.boss_analysis_edits
+for select
+using (
+  exists (
+    select 1
+    from public.boss_analyses a
+    where a.id = analysis_id
+      and a.user_id = auth.uid()
+  )
+);
+
+create policy if not exists "boss_analysis_edits_owner_insert"
+on public.boss_analysis_edits
+for insert
+with check (
+  exists (
+    select 1
+    from public.boss_analyses a
+    where a.id = analysis_id
+      and a.user_id = auth.uid()
+  )
+);
+
+-- bosstiary progress
+create policy if not exists "character_bosstiary_owner_select"
+on public.character_bosstiary_progress
+for select
+using (auth.uid() = user_id);
+
+create policy if not exists "character_bosstiary_owner_insert"
+on public.character_bosstiary_progress
+for insert
+with check (auth.uid() = user_id);
+
+create policy if not exists "character_bosstiary_owner_update"
+on public.character_bosstiary_progress
+for update
+using (auth.uid() = user_id)
+with check (auth.uid() = user_id);
+
+create policy if not exists "character_bosstiary_owner_delete"
+on public.character_bosstiary_progress
+for delete
+using (auth.uid() = user_id);
